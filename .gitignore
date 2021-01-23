@@ -1,0 +1,6 @@
+venv/
+chromedriver
+geckodriver
+geckodriver.log
+sample.log
+
