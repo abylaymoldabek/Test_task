@@ -22,17 +22,6 @@ def start(connect):
     )
 
     driver.get('https://tengrinews.kz/')
-    # menu = driver.find_element_by_class_name('tn-all_news')
-    # sub_menu = driver.find_element_by_css_selector('.tn-tape-title')
-    # action = ActionChains(driver)
-    # elements = WebDriverWait(driver, 10).until(
-    #     EC.presence_of_all_elements_located((By.CLASS_NAME, "tn-tape-item"))
-    # )
-    # for element in elements:
-    #     print(element.text)
-    #     element.click()
-    # import pdb
-    # pdb.set_trace()
     parse = parse_main_page(driver.page_source, connect)
     driver.close()
     return parse
@@ -91,7 +80,6 @@ def parse_detail_page(url, connect):
         element = driver.find_element_by_xpath('//span[contains(text(), "Показать комментарии")]')
         driver.execute_script(f"arguments[0].click();", element)
         comments_list = driver.find_elements_by_class_name('tn-comment-item-content')
-        # print(comments_list)
         for comment_element in comments_list:
             parse_datetime = datetime.now()
             author = str(comment_element.find_element_by_class_name('tn-user-name').text)
@@ -103,8 +91,6 @@ def parse_detail_page(url, connect):
                                  comment=comment,
                                  parse_date=parse_datetime
                                  )
-            # import pdb
-            # pdb.set_trace()
         driver.close()
 
 
@@ -144,8 +130,6 @@ def insert_comment_to_db(connection, item_id, author, date, comment, parse_date)
         with connection.cursor() as cursor:
             query = f"INSERT INTO comments (item_id, author, date, comment,parse_date) " \
                     f"VALUES (%s, %s, %s, %s, %s)"
-            import pdb
-            pdb.set_trace()
             cursor.execute(query, (item_id, author, date, comment, parse_date))
         print("ok!")
         connection.commit()
